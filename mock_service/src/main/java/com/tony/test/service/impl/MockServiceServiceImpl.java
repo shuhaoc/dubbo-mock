@@ -6,6 +6,8 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.tony.test.ReflectUtil;
@@ -18,6 +20,7 @@ import com.tony.test.protocol.MockServer;
 import com.tony.test.service.MockServiceService;
 
 @Service public class MockServiceServiceImpl implements MockServiceService {
+    private static final Logger logger = LoggerFactory.getLogger(MockServiceServiceImpl.class);
 
     @Resource MockServiceMapper                    mockServiceMapper;
 
@@ -39,21 +42,25 @@ import com.tony.test.service.MockServiceService;
         }
         int count = 0;
         mockService.setUpdateTime(new Date());
-        if (mockService.getId()!= null) {
-            if ("running".equals(mockService.getServiceStatus())) {
-                mockServer.startService(mockService.getId());
-            } else if ("stop".equals(mockService.getServiceStatus())) {
-                mockServer.stopService(mockService.getId());
-            }
-            count = mockServiceMapper.updateByPrimaryKeySelective(mockService);
-        } else {
-            count = mockServiceMapper.insert(mockService);
-            List<MockService> services = selectMockService(mockService);
-            if (CollectionUtils.isNotEmpty(services)) {
-                for (MockService service : services) {
-                    mockService.setId(service.getId());
+        try {
+            if (mockService.getId() != null) {
+                if ("running".equals(mockService.getServiceStatus())) {
+                    mockServer.startService(mockService.getId());
+                } else if ("stop".equals(mockService.getServiceStatus())) {
+                    mockServer.stopService(mockService.getId());
+                }
+                count = mockServiceMapper.updateByPrimaryKeySelective(mockService);
+            } else {
+                count = mockServiceMapper.insert(mockService);
+                List<MockService> services = selectMockService(mockService);
+                if (CollectionUtils.isNotEmpty(services)) {
+                    for (MockService service : services) {
+                        mockService.setId(service.getId());
+                    }
                 }
             }
+        } catch (Exception e) {
+            logger.error("Operate service [" + mockService.getServiceInterface() + "] failed", e);
         }
         return count;
     }
