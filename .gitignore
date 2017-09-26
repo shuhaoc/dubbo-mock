@@ -28,3 +28,6 @@ target
 .git*
 .classpath
 
+# for IDEA
+*.iml
+.idea/

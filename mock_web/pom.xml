@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tony.mock</groupId>
@@ -34,7 +34,7 @@
 	</dependencies>
 	<build>
 		<finalName>mock_web</finalName>
-		<plugins>
+		<plugins><!--
 			<plugin>
 				<groupId>cn.tony</groupId>
 				<artifactId>tools-maven-plugin</artifactId>
@@ -45,7 +45,7 @@
 					<tomcatHome>/opt/tomcat-mock</tomcatHome>
 					<finalName>mock_web</finalName>
 				</configuration>
-			</plugin>
+			</plugin>-->
 		</plugins>
 	</build>
 
